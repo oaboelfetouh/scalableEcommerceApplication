@@ -3,14 +3,16 @@ const express = require('express');
 const morgan = require("morgan");
 const cors = require ("cors");
 const cookieParser = require("cookie-parser");
-//const { PORT }= require("./config/index.js");
-//const { db } =require("./database");
+const { PORT }= require("./config/index.js");
+const { db } = require('./database/index.js');
+const { ErrorMiddleware } = require('./middlewares/errors.middlewares.js');
+const { router } = require('./routes/orders.routes.js');
 
-//const { router } = require('./routers/authentication.routers.js');
 
 // entities must to be with db.sync() function to create the table
-//const { User } = require('./entities/users.entities.js');
-//const { ErrorMiddleware } = require('./middlewares/errors.middlewares.js');
+// we must require here our models just to be created in the database
+
+// ----> const { User } = require('./entities/users.entities.js');
 
 
 class App {
@@ -18,11 +20,12 @@ class App {
     constructor() {
         // create an express application    
         this.app = express();
-        this.port = 3001;
-       // this.connectToDatabase();
-        //this.initializeMiddlewares();
-        //this.initializeRoutes();
-        //this.initializeErrorHandling();
+        this.port = PORT;
+        this.connectToDatabase();
+        this.initializeMiddlewares();
+        this.initializeRoutes();
+        this.initializeErrorHandling();
+
  }
 
  listen() {
@@ -58,7 +61,7 @@ async connectToDatabase() {
   }
   
   initializeRoutes() {
-    this.app.use("", router);
+    this.app.use("/order", router);
   }
 
   initializeErrorHandling() {
